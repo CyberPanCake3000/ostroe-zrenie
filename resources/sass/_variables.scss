@@ -1,0 +1,27 @@
+// Body
+$white: #ffffff;
+$body-bg: #F5F5F5;
+$primary: #00AFE8;
+$text: #130468;
+$text-dark: #0D0D0D;
+$yellow: #F2C94C;
+$violet: #AB9DFB;
+$green: #27AE60;
+$red: #EB5757;
+
+$theme-colors: (
+    "white": $white,
+    "primary": $primary,
+    "text": $text,
+    "text-dark": $text-dark,
+    "yellow": $yellow,
+    "violet": $violet,
+    "success": $green,
+    'error': $red,
+    'danger': $yellow,
+);
+
+// Typography
+$font-family-sans-serif: 'Nunito', sans-serif;
+$font-size-base: 0.9rem;
+$line-height-base: 1.6;
