@@ -10,6 +10,9 @@ window.$ = jQuery;
 
 document.addEventListener('DOMContentLoaded', function () {
 
+    // let toast = $('#notificationToast');
+    // let toastBootstrap = new bootstrap.Toast(toast);
+
     updateDate();
     updateClock();
     setInterval(updateClock, 60000);
@@ -29,8 +32,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let result = day + " " + month;
 
-        $('#dateDiv').text(result);
-        $('#dayDiv').text(weekday);
+        $('.dateDiv').text(result);
+        $('.dayDiv').text(weekday);
     }
 
     function updateClock()
@@ -42,65 +45,72 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let time = hours + ":" + minutes;
 
-        $("#timeDiv").text(time);
+        $(".timeDiv").text(time);
     }
 
-    $('#createForm').validate({
-        rules: {
-          'clientName': 'required',
-          'clientPhone': 'required',
-        },
-        messages: {
-            'clientName': 'Это обязательное поле',
-            'clientPhone': 'Это обязательное поле',
-        }
-    });
+    // $('#createForm').validate({
+    //     rules: {
+    //       'clientName': 'required',
+    //       'clientPhone': {
+    //           required: 'required',
+    //       //    TODO: PHONE NUMBER VALIDATION
+    //       },
+    //     },
+    //     messages: {
+    //         'clientName': 'Это обязательное поле',
+    //         'clientPhone': 'Это обязательное поле',
+    //     }
+    // });
 
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
+    // $.ajaxSetup({
+    //     headers: {
+    //         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    //     }
+    // });
 
-    $("#createForm").submit(function (e) {
-        e.preventDefault();
-        var formData = $(this).serializeArray();
-        $.ajax({
-            type: 'POST',
-            url: "/create",
-            data: formData,
-            dataType: 'json',
-            success: function (data) {
-                let errorDiv = $('#errorDiv');
+    // $("input[type='tel']").on("keypress", function (event) {
+    //     var key = event.charCode || event.keyCode || 0;
+    //     return (key === 8 || key === 9 || key === 46 || (key >= 48 && key <= 57));
+    // });
 
-                if(!errorDiv.hasClass('d-none'))
-                {
-                    errorDiv.addClass('d-none');
-                }
-
-                let modal = $('#addOrderModal');
-                let modalBootstrap = bootstrap.Modal.getInstance(modal);
-                modalBootstrap.hide();
-
-                let toast = $('#notificationToast');
-                let toastBootstrap = new bootstrap.Toast(toast);
-
-                let dateElement = $('.orderDate'), date = new Date();
-                dateElement.text(date.getHours() + ':' + date.getMinutes());
-
-                let toastBody = $('.toast-body');
-                toastBody.text('Заказ №' + data['order_id'] + ' успешно создан!');
-
-                toastBootstrap.show();
-            },
-            error: function (data) {
-                let errorDiv = $('#errorDiv'), errorMessage = $('#errorMessage');
-                errorDiv.removeClass('d-none');
-                errorMessage.text(data['error']);
-            }
-        });
-
-    });
+    // $("#createForm").submit(function (e) {
+    //     e.preventDefault();
+    //     var formData = $(this).serializeArray();
+    //     $.ajax({
+    //         type: 'POST',
+    //         url: "/orders",
+    //         data: formData,
+    //         dataType: 'json',
+    //         success: function (data) {
+    //             let errorDiv = $('#errorDiv');
+    //
+    //             if(!errorDiv.hasClass('d-none'))
+    //             {
+    //                 errorDiv.addClass('d-none');
+    //             }
+    //
+    //             let modal = $('#addOrderModal');
+    //             let modalBootstrap = bootstrap.Modal.getInstance(modal);
+    //             modalBootstrap.hide();
+    //
+    //
+    //             let dateElement = $('.orderDate'), date = new Date();
+    //             dateElement.text(date.getHours() + ':' + date.getMinutes());
+    //
+    //             let toastBody = $('.toast-body');
+    //             toastBody.text('Заказ №' + data['order_id'] + ' успешно создан!');
+    //
+    //             toastBootstrap.show();
+    //
+    //             $('#createForm')[0].reset();
+    //         },
+    //         error: function (data) {
+    //             let errorDiv = $('#errorDiv'), errorMessage = $('#errorMessage');
+    //             errorDiv.removeClass('d-none');
+    //             errorMessage.text(data['error']);
+    //         }
+    //     });
+    // });
 });
 
 

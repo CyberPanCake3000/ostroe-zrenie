@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Clients;
+use App\Models\Orders;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Carbon\Carbon;
 
 class HomeController extends Controller
 {
@@ -13,7 +17,7 @@ class HomeController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+//        $this->middleware('auth');
     }
 
     /**
@@ -21,8 +25,14 @@ class HomeController extends Controller
      *
      * @return \Illuminate\Contracts\Support\Renderable
      */
-    public function index()
+    public function support()
     {
-        return view('home');
+        return view('support');
+    }
+
+    public function home()
+    {
+        $orders = Orders::latest()->take(5)->get();
+        return view('orders/home', ['orders' => $orders]);
     }
 }

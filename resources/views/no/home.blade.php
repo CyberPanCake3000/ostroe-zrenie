@@ -1,14 +1,20 @@
-@extends('layouts.app')
+@extends('no.app')
 
 @section('content')
 
+    @if ($message = Session::get('success'))
+        <div class="alert alert-success rounded-4">
+            <p class="m-0">{{ $message }}</p>
+        </div>
+    @endif
+
     @if (count($orders) === 0)
-        <div class="bg-white h-75 rounded-4 d-flex justify-content-center align-items-center">
+        <div class="bg-white h-100 rounded-4 d-flex justify-content-center align-items-center">
             <div class="text-center">
                 <div class="h2 text-muted">
-                    icon here
+                    <i class="bi bi-clipboard2-x"></i>
                 </div>
-                Упс! Заказов еще нет(
+                Пока что тут пусто...
             </div>
         </div>
     @else
@@ -145,9 +151,14 @@
                                 {{ $order->getDate() }}
                             </div>
                         </div>
-                        <div class="modal-footer d-flex justify-content-between">
-                            <button type="button" class="btn btn-secondary">Удалить</button>
-                            <button type="button" class="btn btn-primary text-white">Редактировать</button>
+                        <div class="modal-footer">
+                            <form id="deleteOrder" action="{{ route('orders.destroy', $order->id) }}"
+                                  class="d-flex justify-content-between" method="POST">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="btn btn-error text-white me-2 deleteOrder">Удалить</button>
+                                <a href="{{ route('orders.edit', $order->id) }}" class="btn btn-primary text-white">Редактировать</a>
+                            </form>
                         </div>
                     </div>
                 </div>
