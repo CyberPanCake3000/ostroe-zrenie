@@ -1,6 +1,23 @@
-@extends('orders.layout')
+@extends('layout')
 
 @section('content')
+    @if($message = Session::get('message'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div>
+                {{ $message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($error = Session::get('error'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div>
+                {{ $error }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
 
     <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
@@ -146,14 +163,11 @@
                                                     </div>
                                                     @foreach($client->getOrders as $order)
                                                         <div class="row border-bottom py-2">
-                                                            <div class="col-1">{{ $order->id }}</div>
+                                                            <a href="{{ route('orders.show', $order->id) }}"
+                                                               class="col-1">{{ $order->id }}</a>
                                                             <div class="col-5">{{ $order->getDate() }}</div>
                                                             <div
                                                                 class="col-5">{{ $order->getClient->phone_number }}</div>
-
-                                                            <a href="#" class="col-1 text-primary">
-                                                                <i class="bi bi-box-arrow-up-right"></i>
-                                                            </a>
                                                         </div>
                                                     @endforeach
                                                 </div>
@@ -162,10 +176,8 @@
                                         @endif
 
                                         <div class="modal-footer">
-                                            <form action="">
-                                                <button class="btn btn-outline-error" type="submit">Удалить</button>
-                                                <a class="btn btn-primary text-white" href="#">Изменить</a>
-                                            </form>
+                                            <a class="btn btn-primary text-white"
+                                               href="{{ route('clients.edit', $client->id) }}">Изменить</a>
                                         </div>
                                     </div>
                                 </div>

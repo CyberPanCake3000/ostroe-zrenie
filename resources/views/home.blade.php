@@ -1,4 +1,4 @@
-@extends('orders.layout')
+@extends('layout')
 
 @section('content')
 
@@ -16,7 +16,11 @@
                     </div>
                     @foreach($orders as $order)
                         <div class="d-flex border-bottom p-2">
-                            <div class="col-md-1 col-1">{{ $order->id }}</div>
+                            <div class="col-md-1 col-1">
+                                <a href="{{ route('orders.show', $order->id) }}">
+                                    {{ $order->id }}
+                                </a>
+                            </div>
                             <div class="col-md-4 col-5">{{ $order->getClientInfo->name }}</div>
                             <div class="col-md-4 col-5">{{ $order->getClient->phone_number }}</div>
                             <div class="col-md-3 col-5">{{ $order->getDate() }}</div>
@@ -42,7 +46,11 @@
                     </div>
                     @foreach($orders as $order)
                         <div class="d-flex border-bottom p-2">
-                            <div class="col-md-1 col-1">{{ $order->getClientInfo->id }}</div>
+                            <div class="col-md-1 col-1">
+                                <a href="{{ route('clients.show', $order->getClientInfo->id) }}">
+                                    {{ $order->getClientInfo->id }}
+                                </a>
+                            </div>
                             <div class="col-md-4 col-5">{{ $order->getClientInfo->name }}</div>
                             <div class="col-md-4 col-5">{{ $order->getClientInfo->birth_date }}</div>
                             <div class="col-md-3 col-5">{{ $order->getClient->phone_number }}</div>
@@ -50,7 +58,7 @@
                     @endforeach
                 </div>
                 <div class="d-flex justify-content-end mt-3">
-                    <a href="{{ route('clients') }}" class="btn btn-primary text-white">Все покупатели</a>
+                    <a href="{{ route('clients.index') }}" class="btn btn-primary text-white">Все покупатели</a>
                 </div>
             </div>
         </div>

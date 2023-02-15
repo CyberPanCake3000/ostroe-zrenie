@@ -1,6 +1,5 @@
 @extends('layout')
 
 @section('content')
-
-    <h2>Создать заказ</h2>
+    here is support
 @endsection

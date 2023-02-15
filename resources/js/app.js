@@ -10,9 +10,6 @@ window.$ = jQuery;
 
 document.addEventListener('DOMContentLoaded', function () {
 
-    // let toast = $('#notificationToast');
-    // let toastBootstrap = new bootstrap.Toast(toast);
-
     updateDate();
     updateClock();
     setInterval(updateClock, 60000);
@@ -48,19 +45,18 @@ document.addEventListener('DOMContentLoaded', function () {
         $(".timeDiv").text(time);
     }
 
-    // $('#createForm').validate({
-    //     rules: {
-    //       'clientName': 'required',
-    //       'clientPhone': {
-    //           required: 'required',
-    //       //    TODO: PHONE NUMBER VALIDATION
-    //       },
-    //     },
-    //     messages: {
-    //         'clientName': 'Это обязательное поле',
-    //         'clientPhone': 'Это обязательное поле',
-    //     }
-    // });
+    $('#createForm').validate({
+        rules: {
+          'clientName': 'required',
+          'clientPhone': {
+              required: 'required',
+          },
+        },
+        messages: {
+            'clientName': 'Это обязательное поле',
+            'clientPhone': 'Это обязательное поле',
+        }
+    });
 
     // $.ajaxSetup({
     //     headers: {
@@ -68,10 +64,10 @@ document.addEventListener('DOMContentLoaded', function () {
     //     }
     // });
 
-    // $("input[type='tel']").on("keypress", function (event) {
-    //     var key = event.charCode || event.keyCode || 0;
-    //     return (key === 8 || key === 9 || key === 46 || (key >= 48 && key <= 57));
-    // });
+    $("input[type='tel']").on("keypress", function (event) {
+        var key = event.charCode || event.keyCode || 0;
+        return (key === 8 || key === 9 || key === 46 || (key >= 48 && key <= 57));
+    });
 
     // $("#createForm").submit(function (e) {
     //     e.preventDefault();

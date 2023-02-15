@@ -1,10 +1,31 @@
-@extends('orders.layout')
+@extends('layout')
 
 @section('content')
 
-    <ul class="nav nav-pills mb-3" id="pills-tab" role="tablist">
+    @if($message = Session::get('message'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div>
+                {{ $message }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+    @if($error = Session::get('error'))
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <div>
+                {{ $error }}
+            </div>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    @endif
+
+
+    <ul class="nav nav-pills mb-2" id="pills-tab" role="tablist">
         <li class="nav-item" role="presentation">
-            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Все заказы</button>
+            <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home"
+                    type="button" role="tab" aria-controls="pills-home" aria-selected="true">Все заказы
+            </button>
         </li>
     </ul>
 
@@ -12,8 +33,8 @@
         <div class="container-fluid">
             <div class="overflow-scroll">
                 <div class="border-bottom p-2 d-flex">
-                    <div class="fw-bold col-md-1 col-1 me-2">№</div>
-                    <div class="fw-bold col-md-3 col-5">ФИО</div>
+                    <div class="fw-bold col-1 me-2">№</div>
+                    <div class="fw-bold col-md-2 col-5">ФИО</div>
                     <div class="fw-bold col-md-3 col-5">Телефон</div>
                     <div class="fw-bold col-md-3 col-5">Время</div>
                     <div class="fw-bold col-md-3 col-5">Комментарий</div>
@@ -24,8 +45,8 @@
                         <div class="d-flex border-bottom p-2" data-bs-toggle="modal"
                              data-bs-target="#orderModal{{ $order->id }}">
 
-                            <div class="col-md-1 col-1 me-2">{{ $order->id }}</div>
-                            <div class="col-md-3 col-5">{{ $order->getClientInfo->name }}</div>
+                            <div class="col-1 me-2">{{ $order->id }}</div>
+                            <div class="col-md-2 col-5">{{ $order->getClientInfo->name }}</div>
                             <div class="col-md-3 col-5">{{ $order->getClient->phone_number }}</div>
                             <div class="col-md-3 col-5">{{ $order->getDate() }}</div>
                             <div class="col-md-3 col-5">{{ $order->comment }}</div>
@@ -37,9 +58,12 @@
                             <div class="modal-dialog modal-dialog-centered">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h1 class="modal-title fs-5 text-muted" id="orderModal{{ $order->id }}Label">Заказ
+                                        <h1 class="modal-title fs-5 text-muted"
+                                            id="orderModal{{ $order->id }}Label">
+                                            Заказ
                                             № {{ $order->id }}</h1>
-                                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
                                     </div>
                                     <div class="modal-body">
                                         <h2 class="text-text fw-bold">
@@ -141,9 +165,11 @@
                                         </div>
                                     </div>
                                     <div class="modal-footer">
-                                        <form action="">
+                                        <form action="{{ route('orders.destroy', $order->id) }}" method="POST">
+                                            @csrf
+                                            @method('DELETE')
                                             <button class="btn btn-outline-error" type="submit">Удалить</button>
-                                            <a class="btn btn-primary text-white" href="#">Изменить</a>
+                                            <a class="btn btn-primary text-white" href="{{ route('orders.edit', $order->id) }}">Изменить</a>
                                         </form>
                                     </div>
                                 </div>

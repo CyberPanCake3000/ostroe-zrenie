@@ -2,9 +2,9 @@
 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\MainController;
 use App\Http\Controllers\OrdersController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\ClientsController;
 
 
 /*
@@ -19,8 +19,9 @@ use App\Http\Controllers\HomeController;
 */
 //Auth::routes();
 Route::get('/', [HomeController::class, 'home'])->name('home');
-Route::get('/clients', [OrdersController::class, 'clients'])->name('clients');
+//Route::get('/clients', [OrdersController::class, 'clients'])->name('clients');
 Route::get('/support', [HomeController::class, 'support'])->name('support');
 //    ->middleware('auth');
 
 Route::resource('orders', OrdersController::class);
+Route::resource('clients', ClientsController::class);

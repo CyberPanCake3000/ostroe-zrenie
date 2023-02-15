@@ -6,6 +6,7 @@ use App\Models\Clients;
 use App\Models\ClientsInfo;
 use App\Models\Orders;
 use Carbon\Carbon;
+use http\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -19,9 +20,6 @@ class OrdersController extends Controller
      */
     public function index()
     {
-//        TODO: rewrite this method use ajax instead
-        $today = Carbon::today();
-//        $orders = Orders::whereDate('updated_at', $today)->orderBy('updated_at', 'desc')->paginate(10);
         $orders = Orders::orderBy('updated_at', 'desc')->paginate(10);
         $count = count($orders);
         return view('/orders/index', ['orders' => $orders, 'count' => $count]);
@@ -66,14 +64,11 @@ class OrdersController extends Controller
             'Dpp' => $request->Dpp,
         ]);
 
-
-        if (Clients::where('phone_number', $request->clientPhone)->exists()) {
-            $client = Clients::where('phone_number', $request->clientPhone)->first();
-        } else {
-            $client = Clients::create([
+        $client = Clients::firstOrCreate(
+            [
                 'phone_number' => $request->clientPhone,
-            ]);
-        };
+            ]
+        );
 
         $order = Orders::create([
             'client_id' => $client->id,
@@ -84,10 +79,10 @@ class OrdersController extends Controller
 
         if (!$order)
         {
-            return response()->json(['error' => 'Невозможно создать заказ'], 400);
+            return redirect()->route('orders.index')->with('error', 'Невозможно создать заказ');
         }
 
-        return response()->json(['message' => 'order creates successfully', 'order_id' => $order->id], 200);
+        return redirect()->route('orders.index')->with('message', 'Заказ №' . $order->id . " успешно создан!");
     }
 
     /**
@@ -96,9 +91,9 @@ class OrdersController extends Controller
      * @param  \App\Models\Orders  $orders
      * @return \Illuminate\Http\Response
      */
-    public function show(Orders $orders)
+    public function show(Orders $order)
     {
-        //
+        return view('orders.show', compact('order'));
     }
 
     /**
@@ -109,7 +104,7 @@ class OrdersController extends Controller
      */
     public function edit(Orders $order)
     {
-        return view('/edit', compact('order'));
+        return view('orders/edit', compact('order'));
     }
 
     /**
@@ -121,20 +116,72 @@ class OrdersController extends Controller
      */
     public function update(Request $request, Orders $order)
     {
-//        TODO:make validation for name and phone
         $validator = Validator::make($request->all(), [
             'clientName' => 'required',
             'clientPhone' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->all()], 400);
+            return redirect()->route('orders.index')->with('error', 'Ошибка заполнения данных о заказе!');
         }
 
-//      TODO: update order and client info
-        $order->update($request->all());
+        $id = $order->id;
 
-        return redirect()->route('home')->with('success','Заказ успешно обновлен!');
+        if($request->clientName == $order->getClientInfo->name){
+            $clientInfo = $order->getClientInfo;
+
+            $clientInfo->update(
+                [
+                    'birth_date' => $request->clientBirthDate,
+                ]
+            );
+        } else {
+            $clientInfo = ClientsInfo::firstOrCreate(
+                [
+                    'name' => $request->clientName,
+                    'birth_date' => $request->clientBirthDate,
+                ]
+            );
+        }
+
+        $updateClientInfo = $clientInfo->update(
+            [
+                'OD_Sph' => $request->OD_Sph,
+                'OD_Cyl' => $request->OD_Cyl,
+                'OD_ax' => $request->OD_ax,
+                'OS_Sph' => $request->OS_Sph,
+                'OS_Cyl' => $request->OS_Cyl,
+                'OS_ax' => $request->OS_ax,
+                'Dpp' => $request->Dpp,
+            ]
+        );
+
+        if(!$updateClientInfo)
+        {
+            return redirect()->route('orders.index')->with('error', 'Невозможно обновить информацию о покупателе');
+        }
+
+        $client = Clients::firstOrCreate(
+            [
+                'phone_number' => $request->clientPhone,
+            ]
+        );
+
+        $update = $order->update(
+            [
+                'client_id' => $client->id,
+                'client_info_id' => $clientInfo->id,
+                'glasses_model' => $request->glassesModel,
+                'comment' => $request->comment,
+            ]
+        );
+
+        if(!$update)
+        {
+            return redirect()->route('orders.index')->with('error', 'Ошибка при обновлении информации о заказе');
+        }
+
+        return redirect()->route('orders.index')->with('message', 'Заказ №'. $id .' успешно обновлен!');
     }
 
     /**
@@ -146,13 +193,12 @@ class OrdersController extends Controller
     public function destroy(Orders $order)
     {
         $id = $order->id;
-        $order->delete();
-        return redirect()->route('home')->with('success', 'Заказ №' . $id . ' успешно удален!');
+        $delete = $order->delete();
+
+        $message =  ($delete) ? 'Заказ №' . $id . " успешно удален!" : 'Не удалось удалить заказ №' . $id;
+
+        return redirect()->route('orders.index')->with('message', $message);
     }
 
-    public function clients()
-    {
-        $clients = ClientsInfo::paginate(10);
-        return view('orders/clients', ['clients' => $clients]);
-    }
+
 }

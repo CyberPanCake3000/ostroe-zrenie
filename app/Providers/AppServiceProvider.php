@@ -32,7 +32,7 @@ class AppServiceProvider extends ServiceProvider
         View::composer('*', function($view)
         {
             $today = Carbon::today();
-            $count = count(Orders::whereDate('updated_at', $today)->get());
+            $count = count(Orders::whereDate('created_at', $today)->get());
             $view->with(['count' => $count]);
         });
 

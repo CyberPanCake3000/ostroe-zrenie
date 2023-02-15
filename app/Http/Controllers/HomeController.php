@@ -33,6 +33,6 @@ class HomeController extends Controller
     public function home()
     {
         $orders = Orders::latest()->take(5)->get();
-        return view('orders/home', ['orders' => $orders]);
+        return view('home', ['orders' => $orders]);
     }
 }
