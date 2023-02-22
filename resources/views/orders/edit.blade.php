@@ -15,24 +15,28 @@
             </div>
         </div>
 
-        <div class="row">
-
+        <div class="container row">
 
             <div class=" col-md-6 col-12 row g-2 align-items-start mb-3">
                 <div class="col-6">
-                    <label for="clientName" class="form-label">Имя покупателя</label>
-                    <input name="clientName" id="clientName" type="text" class="form-control"
-                           placeholder="Имя покупателя" value="{{ $order->getClientInfo->name }}" required>
+                    <label for="name" class="form-label">Имя покупателя</label>
+                    <input list="customers" name="name" id="name" type="text" class="name form-control"
+                           placeholder="Имя покупателя" value="{{ $order->getCustomer->name }}" required>
+                    <datalist id="customers"  class="customers">
+
+                    </datalist>
                 </div>
                 <div class="col-6">
-                    <label for="clientBirthDate" class="form-label">Дата рождения</label>
-                    <input name="clientBirthDate" id="clientBirthDate" type="date"
-                           class="form-control" value="{{ $order->getClientInfo->birth_date }}">
+                    <label for="birth_date" class="form-label">Дата рождения</label>
+                    <input name="birth_date" id="birth_date" type="date"
+                           class="birth_date form-control" value="{{ $order->getCustomer->birth_date }}">
                 </div>
                 <div class="col-md-6 col-12">
-                    <label for="clientPhone" class="form-label">Номер телефона покупателя</label>
-                    <input name="clientPhone" id="clientPhone" type="tel" class="form-control"
-                           placeholder="+7 999 99 99 99" value="{{ $order->getClient->phone_number }}" required>
+                    <label for="phone_number" class="form-label">Номер телефона покупателя</label>
+                    <input list="phone_numbers" id="phone_number" name="phone_number" placeholder="+7 999 99 99 99" class="phone_number form-control" type="tel" value="{{ $order->getCustomer->getPhoneNumber->phone_number }}" required/>
+                    <datalist id="phone_numbers"  class="phone_number">
+
+                    </datalist>
                 </div>
             </div>
 
@@ -46,19 +50,19 @@
                         <div class="col-4">
                             <label for="OD_Sph" class="form-label">Sph</label>
                             <input type="number" step="any" name="OD_Sph" id="OD_Sph"
-                                   class="form-control" value="{{ $order->getClientInfo->OD_Sph }}">
+                                   class="form-control" value="{{ $order->getCustomer->OD_Sph }}">
                         </div>
 
                         <div class="col-4">
                             <label for="OD_Cyl" class="form-label">Cyl</label>
                             <input type="number" step="any" name="OD_Cyl" id="OD_Cyl"
-                                   class="form-control" value="{{ $order->getClientInfo->OD_Cyl }}">
+                                   class="form-control" value="{{ $order->getCustomer->OD_Cyl }}">
                         </div>
 
                         <div class="col-4">
                             <label for="OD_ax" class="form-label">ax</label>
                             <input type="number" step="any" name="OD_ax" id="OD_ax"
-                                   class="form-control" value="{{ $order->getClientInfo->OD_ax }}">
+                                   class="form-control" value="{{ $order->getCustomer->OD_ax }}">
                         </div>
                     </div>
                 </div>
@@ -72,19 +76,19 @@
                         <div class="col-4">
                             <label for="OS_Sph" class="form-label">Sph</label>
                             <input type="number" step="any" name="OS_Sph" id="OS_Sph"
-                                   class="form-control" value="{{ $order->getClientInfo->OS_ax }}">
+                                   class="form-control" value="{{ $order->getCustomer->OS_ax }}">
                         </div>
 
                         <div class="col-4">
                             <label for="OS_Cyl" class="form-label">Cyl</label>
                             <input type="number" step="any" name="OS_Cyl" id="OS_Cyl"
-                                   class="form-control" value="{{ $order->getClientInfo->OS_ax }}">
+                                   class="form-control" value="{{ $order->getCustomer->OS_ax }}">
                         </div>
 
                         <div class="col-4">
                             <label for="OS_ax" class="form-label">ax</label>
                             <input type="number" step="any" name="OS_ax" id="OS_ax"
-                                   class="form-control" value="{{ $order->getClientInfo->OS_ax }}">
+                                   class="form-control" value="{{ $order->getCustomer->OS_ax }}">
                         </div>
                     </div>
                 </div>
@@ -93,7 +97,7 @@
                     <div class="col-6">
                         <label for="Dpp" class="form-label">Dpp</label>
                         <input name="Dpp" id="Dpp" type="number" step="any"
-                               class="form-control" value="{{ $order->getClientInfo->Dpp }}">
+                               class="form-control" value="{{ $order->getCustomer->Dpp }}">
                     </div>
                     <div class="col-6">
                         <label for="glassesModel" class="form-label">Модель очков</label>
@@ -108,9 +112,9 @@
 
 
         <div class="col-12 col-md-6">
-            <label for="orderComment" class="form-label">Комментарий по заказу</label>
-            <textarea type="text" class="form-control mb-3" name="orderComment"
-                      id="orderComment">{{ $order->comment }}</textarea>
+            <label for="comment" class="form-label">Комментарий по заказу</label>
+            <textarea type="text" class="form-control mb-3" name="comment"
+                      id="comment">{{ $order->comment }}</textarea>
         </div>
 
         <div class="d-flex justify-content-end">

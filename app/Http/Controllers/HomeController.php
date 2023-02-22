@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients;
+use App\Models\Customers;
 use App\Models\Orders;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -33,6 +33,7 @@ class HomeController extends Controller
     public function home()
     {
         $orders = Orders::latest()->take(5)->get();
-        return view('home', ['orders' => $orders]);
+        $customers = Customers::latest()->take(5)->get();
+        return view('home', ['orders' => $orders, 'customers' => $customers]);
     }
 }

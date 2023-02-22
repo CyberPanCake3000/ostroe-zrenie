@@ -6,11 +6,11 @@
     <h2>Заказ №{{ $order->id }}</h2>
     <div>
         <h2 class="text-text fw-bold">
-            {{ $order->getClientInfo->name }}
+            {{ $order->getCustomer->name }}
         </h2>
 
         <div class="fw-bold">
-            {{ $order->getClient->phone_number }}
+            {{ $order->getCustomer->getPhoneNumber->phone_number }}
         </div>
 
         <div class="mb-3">
@@ -28,7 +28,7 @@
                         Sph
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OD_Sph }}
+                        {{ $order->getCustomer->OD_Sph }}
                     </div>
                 </div>
 
@@ -37,7 +37,7 @@
                         Cyl
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OD_Cyl }}
+                        {{ $order->getCustomer->OD_Cyl }}
                     </div>
                 </div>
 
@@ -46,7 +46,7 @@
                         ax
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OD_ax }}
+                        {{ $order->getCustomer->OD_ax }}
                     </div>
                 </div>
             </div>
@@ -63,7 +63,7 @@
                         Sph
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OS_Sph }}
+                        {{ $order->getCustomer->OS_Sph }}
                     </div>
                 </div>
 
@@ -72,7 +72,7 @@
                         Cyl
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OS_Cyl }}
+                        {{ $order->getCustomer->OS_Cyl }}
                     </div>
                 </div>
 
@@ -81,7 +81,7 @@
                         ax
                     </div>
                     <div>
-                        {{ $order->getClientInfo->OS_ax }}
+                        {{ $order->getCustomer->OS_ax }}
                     </div>
                 </div>
             </div>
@@ -90,7 +90,7 @@
         <div class="d-flex justify-content-start mb-3">
             <div class="col-4">
                 <div class="text-muted">Dpp</div>
-                {{ $order->getClientInfo->Dpp }}
+                {{ $order->getCustomer->Dpp }}
             </div>
 
             <div class="col-4">

@@ -11,16 +11,12 @@ class Orders extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['client_id', 'client_info_id', 'glasses_model', 'comment'];
+    protected $fillable = ['customer_id', 'glasses_model', 'comment'];
 
-    public function getClient()
-    {
-        return $this->belongsTo(Clients::class, 'client_id', 'id');
-    }
 
-    public function getClientInfo()
+    public function getCustomer()
     {
-        return $this->belongsTo(ClientsInfo::class, 'client_info_id', 'id');
+        return $this->belongsTo(Customers::class, 'customer_id', 'id');
     }
 
     public function getDate()

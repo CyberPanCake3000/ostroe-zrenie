@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Clients;
-use App\Models\ClientsInfo;
+
+use App\Models\Customers;
+use App\Models\PhoneNumbers;
 use App\Models\Orders;
-use Carbon\Carbon;
-use http\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -21,8 +20,7 @@ class OrdersController extends Controller
     public function index()
     {
         $orders = Orders::orderBy('updated_at', 'desc')->paginate(10);
-        $count = count($orders);
-        return view('/orders/index', ['orders' => $orders, 'count' => $count]);
+        return view('/orders/index', ['orders' => $orders]);
     }
 
     /**
@@ -43,38 +41,34 @@ class OrdersController extends Controller
      */
     public function store(Request $request)
     {
-        $validator = Validator::make($request->all(), [
-            'clientName' => 'required',
-            'clientPhone' => 'required',
+        $request->validate([
+            'name' => 'required',
+            'phone_number' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()->all()], 400);
-        }
-
-        $clientInfo = ClientsInfo::create([
-            'name' => $request->clientName,
-            'birth_date' => $request->clientBirthDate,
-            'OD_Sph' => $request->OD_Sph,
-            'OD_Cyl' => $request->OD_Sph,
-            'OD_ax' => $request->OD_Sph,
-            'OS_Sph' => $request->OS_Sph,
-            'OS_Cyl' => $request->OS_Sph,
-            'OS_ax' => $request->OS_Sph,
-            'Dpp' => $request->Dpp,
-        ]);
-
-        $client = Clients::firstOrCreate(
+        $phoneNumber = PhoneNumbers::firstOrCreate(
             [
-                'phone_number' => $request->clientPhone,
+                'phone_number' => $request->phone_number,
             ]
         );
 
+        $customer = Customers::firstOrCreate([
+            'name' => $request->name,
+            'birth_date' => $request->birth_date,
+            'OD_Sph' => $request->OD_Sph,
+            'OD_Cyl' => $request->OD_Cyl,
+            'OD_ax' => $request->OD_ax,
+            'OS_Sph' => $request->OS_Sph,
+            'OS_Cyl' => $request->OS_Cyl,
+            'OS_ax' => $request->OS_ax,
+            'Dpp' => $request->Dpp,
+            'phone_id' => $phoneNumber->id,
+        ]);
+
         $order = Orders::create([
-            'client_id' => $client->id,
-            'client_info_id' => $clientInfo->id,
+            'customer_id' => $customer->id,
             'glasses_model' => $request->glassesModel,
-            'comment' => $request->orderComment,
+            'comment' => $request->comment,
         ]);
 
         if (!$order)
@@ -116,61 +110,57 @@ class OrdersController extends Controller
      */
     public function update(Request $request, Orders $order)
     {
-        $validator = Validator::make($request->all(), [
-            'clientName' => 'required',
-            'clientPhone' => 'required',
+        $request->validate([
+            'name' => 'required',
+            'phone_number' => 'required',
         ]);
 
-        if ($validator->fails()) {
-            return redirect()->route('orders.index')->with('error', 'Ошибка заполнения данных о заказе!');
-        }
-
         $id = $order->id;
+        $oldCustomer = $order->getCustomer;
 
-        if($request->clientName == $order->getClientInfo->name){
-            $clientInfo = $order->getClientInfo;
 
-            $clientInfo->update(
+        $phoneNumber = PhoneNumbers::firstOrCreate(
+            [
+                'phone_number' => $request->phone_number,
+            ]
+        );
+
+        if($request->name == $oldCustomer->name & $phoneNumber->id == $oldCustomer->phone_id){
+            $customer = $order->getCustomer;
+
+            $customer->update(
                 [
-                    'birth_date' => $request->clientBirthDate,
+                    'birth_date' => $request->birth_date,
+                    'OD_Sph' => $request->OD_Sph,
+                    'OD_Cyl' => $request->OD_Cyl,
+                    'OD_ax' => $request->OD_ax,
+                    'OS_Sph' => $request->OS_Sph,
+                    'OS_Cyl' => $request->OS_Cyl,
+                    'OS_ax' => $request->OS_ax,
+                    'Dpp' => $request->Dpp,
                 ]
             );
+
         } else {
-            $clientInfo = ClientsInfo::firstOrCreate(
+            $customer = Customers::firstOrCreate(
                 [
-                    'name' => $request->clientName,
-                    'birth_date' => $request->clientBirthDate,
+                    'name' => $request->name,
+                    'birth_date' => $request->birth_date,
+                    'OD_Sph' => $request->OD_Sph,
+                    'OD_Cyl' => $request->OD_Cyl,
+                    'OD_ax' => $request->OD_ax,
+                    'OS_Sph' => $request->OS_Sph,
+                    'OS_Cyl' => $request->OS_Cyl,
+                    'OS_ax' => $request->OS_ax,
+                    'Dpp' => $request->Dpp,
+                    'phone_id' => $phoneNumber->id,
                 ]
             );
         }
-
-        $updateClientInfo = $clientInfo->update(
-            [
-                'OD_Sph' => $request->OD_Sph,
-                'OD_Cyl' => $request->OD_Cyl,
-                'OD_ax' => $request->OD_ax,
-                'OS_Sph' => $request->OS_Sph,
-                'OS_Cyl' => $request->OS_Cyl,
-                'OS_ax' => $request->OS_ax,
-                'Dpp' => $request->Dpp,
-            ]
-        );
-
-        if(!$updateClientInfo)
-        {
-            return redirect()->route('orders.index')->with('error', 'Невозможно обновить информацию о покупателе');
-        }
-
-        $client = Clients::firstOrCreate(
-            [
-                'phone_number' => $request->clientPhone,
-            ]
-        );
 
         $update = $order->update(
             [
-                'client_id' => $client->id,
-                'client_info_id' => $clientInfo->id,
+                'customer_id' => $customer->id,
                 'glasses_model' => $request->glassesModel,
                 'comment' => $request->comment,
             ]
@@ -178,7 +168,7 @@ class OrdersController extends Controller
 
         if(!$update)
         {
-            return redirect()->route('orders.index')->with('error', 'Ошибка при обновлении информации о заказе');
+            return redirect()->route('orders.index')->with('error', 'Ошибка при обновлении информации о заказе №' . $id);
         }
 
         return redirect()->route('orders.index')->with('message', 'Заказ №'. $id .' успешно обновлен!');
